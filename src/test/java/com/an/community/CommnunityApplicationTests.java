@@ -1,4 +1,4 @@
-package com.an.commnunity;
+package com.an.community;
 
 import org.junit.Test;
 //import org.junit.jupiter.api.Test;
