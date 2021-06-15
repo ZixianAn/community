@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -108,4 +109,17 @@ public class UserController {
         }
     }
 
+    @RequestMapping(path = "/changePassword", method = {RequestMethod.GET, RequestMethod.POST})
+    public String changePassword(String oldPassword,String newPassword,String confirmPassword, Model model) {
+        User user = hostHolder.getUser();
+        Map<String, Object> map = userService.changePassword(user,oldPassword, newPassword, confirmPassword);
+        if(map == null || map.isEmpty()){
+            return "redirect:/index";
+        }else {
+            model.addAttribute("oldPasswordMsg", map.get("oldPasswordMsg"));
+            model.addAttribute("newPasswordMsg", map.get("newPasswordMsg"));
+            model.addAttribute("confirmPasswordMsg", map.get("confirmPasswordMsg"));
+            return "/site/setting";
+        }
+    }
 }
