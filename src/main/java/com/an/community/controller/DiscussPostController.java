@@ -1,10 +1,13 @@
 package com.an.community.controller;
 
+import com.an.community.entity.Comment;
 import com.an.community.entity.DiscussPost;
 import com.an.community.entity.Page;
 import com.an.community.entity.User;
+import com.an.community.service.CommentService;
 import com.an.community.service.DiscussPostService;
 import com.an.community.service.UserService;
+import com.an.community.util.CommunityConstant;
 import com.an.community.util.CommunityUtil;
 import com.an.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
+import java.util.*;
 
 @Controller
 @RequestMapping("/discuss")
-public class DiscussPostController {
+public class DiscussPostController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -29,6 +32,9 @@ public class DiscussPostController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
@@ -58,7 +64,7 @@ public class DiscussPostController {
         User user = userService.findUserById(post.getUserId());
         model.addAttribute("user", user);
 
-        /*// 评论分页信息
+        // 评论分页信息
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
         page.setRows(post.getCommentCount());
@@ -108,7 +114,7 @@ public class DiscussPostController {
             }
         }
 
-        model.addAttribute("comments", commentVoList);*/
+        model.addAttribute("comments", commentVoList);
 
         return "/site/discuss-detail";
     }
