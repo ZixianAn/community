@@ -4,6 +4,7 @@ import com.an.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
+@Deprecated
 public interface LoginTicketMapper {
 
     // 该注解会自动拼接字符串，注意每段最后加个空格
