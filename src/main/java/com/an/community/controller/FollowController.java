@@ -1,9 +1,12 @@
 package com.an.community.controller;
 
+import com.an.community.entity.Event;
 import com.an.community.entity.Page;
 import com.an.community.entity.User;
+import com.an.community.event.EventProducer;
 import com.an.community.service.FollowService;
 import com.an.community.service.UserService;
+import com.an.community.util.CommunityConstant;
 import com.an.community.util.CommunityUtil;
 import com.an.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import java.util.Map;
 import static com.an.community.util.CommunityConstant.ENTITY_TYPE_USER;
 
 @Controller
-public class FollowController {
+public class FollowController implements CommunityConstant {
 
     @Autowired
     private FollowService followService;
@@ -31,12 +34,24 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注!");
     }
